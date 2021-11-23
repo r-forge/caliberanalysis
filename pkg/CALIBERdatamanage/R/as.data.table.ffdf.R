@@ -1,6 +1,14 @@
 as.data.table.ffdf <- function(x, keep.rownames = FALSE, ...){
 	# Converts ffdf to data.table
-	as.data.table(as.data.frame(x), keep.rownames = keep.rownames, ...)
+	if (ncol(x) == 1){
+		# Rewrite this function because it otherwise fails
+		# if the table has only one column
+		out <- data.table::data.table(temp := x[[1]][])
+		data.table::setnames(out, origname)
+		return(out)
+	} else {
+		as.data.table(as.data.frame(x), keep.rownames = keep.rownames, ...)
+	}
 }
 
 as.data.table.cohort <- function(x, keep.rownames = FALSE, ...){
@@ -8,8 +16,7 @@ as.data.table.cohort <- function(x, keep.rownames = FALSE, ...){
 	if (is.data.table(x)){
 		x
 	} else {
-		out <- as.data.table(as.data.frame(x),
-			keep.rownames = keep.rownames, ...)
+		out <- as.data.table(x, keep.rownames = keep.rownames, ...)
 		setattr(out, 'idcolname', attr(x, 'idcolname'))
 		setkeyv(out, attr(x, 'idcolname'))
 		setattr(out, 'description', attr(x, 'description'))
@@ -32,7 +39,7 @@ as.ffdf.data.table <- function(x, vmode = NULL, col_args = list(), ...){
 				'` := factor(`', i, '`)', sep = '')))]
 		}
 	}
-	as.ffdf.data.frame(x, vmode = vmode, col_args = col_args, ...)
+	as.ffdf(as.data.frame(x), vmode = vmode, col_args = col_args, ...)
 }
 
 as.ffdf.cohort <- function(x, vmode = NULL, col_args = list(), ...){
@@ -50,7 +57,7 @@ as.ffdf.cohort <- function(x, vmode = NULL, col_args = list(), ...){
 					'` := factor(`', i, '`)', sep = '')))]
 			}
 		}
-		out <- as.ffdf.data.frame(x, vmode = vmode, col_args = col_args, ...)
+		out <- as.ffdf(as.data.frame(x), vmode = vmode, col_args = col_args, ...)
 		setattr(out, 'idcolname', attr(x, 'idcolname'))
 		setattr(out, 'description', attr(x, 'description'))
 		if (!is.cohort(out)){

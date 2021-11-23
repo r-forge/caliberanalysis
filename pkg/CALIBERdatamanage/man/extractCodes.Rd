@@ -88,7 +88,7 @@ setattr(mycodelist, 'Source', 'HES')
 setattr(mycodelist, 'Categories',
     data.table(category = c(1, 3), shortname = c('This', 'That')))
 
-mydata <- data.frame(icd = c('I201', 'I230X', 'I21-'), anonpatid = 1:3)
+mydata <- data.table(icd = c('I201', 'I230X', 'I21-'), anonpatid = 1:3)
 TESTFFDF <- as.ffdf(mydata)
 TESTDT <- as.data.table(mydata)
 extractCodes(TESTFFDF, mycodelist)
@@ -102,7 +102,7 @@ setattr(mycodelist, 'Source', 'OPCS')
 setattr(mycodelist, 'Categories',
     data.table(category = c(2, 3), shortname = c('This', 'That')))
 
-mydata <- data.frame(opcs = c('K.123', 'K234', 'K000'), anonpatid = 1:3)
+mydata <- data.table(opcs = c('K.123', 'K234', 'K000'), anonpatid = 1:3)
 TESTFFDF <- as.ffdf(mydata)
 TESTDT <- as.data.table(mydata)
 extractCodes(TESTFFDF, mycodelist)

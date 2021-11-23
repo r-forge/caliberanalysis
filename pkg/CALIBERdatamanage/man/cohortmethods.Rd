@@ -50,6 +50,7 @@ additional arguments
 }
 
 
+
 \value{
 \code{as.cohort} coerces its argument to a cohort if possible. If it is already a data.table, it is updated by reference, and the new name will be an alias to the existing object. Use \code{copy = TRUE} explicitly to create a cohort object without altering the original object.
 

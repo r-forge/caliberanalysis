@@ -108,26 +108,27 @@ is.cohort <- function(x){
 }
 
 print.cohort <- function(x, ...){
-	if (!(is.cohort(x))){
-		# Remove cohort class designation
-		setattr(x, 'class', setdiff(class(x), 'cohort'))
+	is_a_cohort <- is.cohort(x)
+	classes <- class(x)
+	# Remove cohort class designation
+	data.table::setattr(x, 'class', classes[classes != 'cohort'])
+	if (!is_a_cohort){
 		print(x)
-	} else {		
-		# Prints the summary and then the cohort file itself
-		summary.cohort(x)	
-
+		# Don't restore classes if it is not a cohort
+	} else {
+		# Print the summary and then the cohort file itself
+		summary.cohort(x)
 		cat('\nDATA\n')
 		if (is.data.table(x)){
 			# Changing the class to data.table in order to invoke
 			# print.data.table
-			classes <- class(x)
-			setattr(x, 'class', c('data.table', 'data.frame'))
+			data.table::setattr(x, 'class', c('data.table', 'data.frame'))
 			print(x)
-			# Restore original classes
-			setattr(x, 'class', classes)
 		} else if (is.ffdf(x)){
-			ff::print.ffdf(x)
+			print(x)
 		}
+		# Restore original classes
+		data.table::setattr(x, 'class', classes)
 	}
 }
 
