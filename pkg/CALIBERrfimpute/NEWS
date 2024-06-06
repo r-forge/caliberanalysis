@@ -1,4 +1,34 @@
 =====================================
+Version 1.0-7
+=====================================
+
+BUG FIXES:
+
+- Added the ranger package as a suggested
+  package so that the vignette works with the
+  latest version of mice. Application
+  made to update on CRAN.
+
+=====================================
+Version 1.0-6
+=====================================
+
+BUG FIXES:
+
+- Corrected vignette to work with the
+  latest version of mice. Application
+  made to update on CRAN.
+
+=====================================
+Version 1.0-5
+=====================================
+
+CHANGES:
+
+- Changed DOIs in documentation into
+  URLs to use the https prefix.
+
+=====================================
 Version 1.0-4
 =====================================
 
@@ -21,7 +51,6 @@ BUG FIXES:
 
 =====================================
 Version 1.0-2
-seventh release on CRAN
 =====================================
 
 BUG FIXES:
@@ -33,7 +62,6 @@ BUG FIXES:
 
 =====================================
 Version 1.0-1
-sixth release on CRAN
 =====================================
 
 BUG FIXES:
@@ -43,7 +71,6 @@ BUG FIXES:
 
 =====================================
 Version 1.0-0
-fifth release on CRAN
 =====================================
 
 CHANGES:
@@ -53,7 +80,6 @@ CHANGES:
 
 =====================================
 Version 0.1-6
-fourth release on CRAN
 =====================================
 
 BUG FIXES:
@@ -67,7 +93,6 @@ BUG FIXES:
 
 =====================================
 Version 0.1-5
-third release on CRAN
 =====================================
 
 CHANGES:
@@ -89,7 +114,6 @@ BUG FIXES:
 
 =====================================
 Version 0.1-4
-second release on CRAN
 =====================================
 
 CHANGES:
@@ -109,7 +133,6 @@ CHANGES:
 
 =====================================
 Version 0.1-2
-first release to CRAN
 =====================================
 
 CHANGES:
@@ -119,16 +142,9 @@ CHANGES:
 
 =====================================
 Version 0.1-1
-second version on R-Forge
 =====================================
 
 BUG FIXES:
 
 - Allow factors with missing categories in rfcat.
 - Allow single predictor for imputation models.
-
-=====================================
-Version 0.1-0
-=====================================
-
-Initial version
