@@ -24,7 +24,7 @@ loadDict <- function(dictionary, dictname){
 	} else if (length(dictionary) == 1) {
 		cat('\nLoading', dictname, 'from', dictionary, '\n')
 		temp <- NULL
-		try(temp <- read.csv(dictionary, header = TRUE, as.is = TRUE))
+		try(temp <- utils::read.csv(dictionary, header = TRUE, as.is = TRUE))
 		if (is.null(temp)){
 			stop(paste('Unable to load', dictname, 'from', dictionary))
 		}
@@ -116,7 +116,7 @@ as.drugdose_patterns <- function(patterns){
 		} else if (is.data.frame(patterns)){
 			# do nothing
 		} else if (is.character(patterns) & length(patterns) == 1){
-			patterns <- read.csv(patterns, as.is = TRUE, row.names = NULL)		
+			patterns <- utils::read.csv(patterns, as.is = TRUE, row.names = NULL)		
 		} else {
 			stop('Patterns is not a data.frame or filepath.')
 		}
@@ -174,6 +174,7 @@ as.drugdose_patterns <- function(patterns){
 }
 
 as.drugdose_lookups <- function(lookups){
+	qty <- freq <- tot <- time <- duration <- daily_dose <- text <- NULL
 	if (class(lookups)[1] == 'drugdose_lookups'){
 		# do nothing
 		return(lookups)
@@ -184,7 +185,7 @@ as.drugdose_lookups <- function(lookups){
 		} else if (is.data.frame(lookups)){
 			# do nothing
 		} else if (is.character(lookups) & length(lookups) == 1){
-			lookups <- read.csv(lookups, as.is = TRUE, row.names = NULL)		
+			lookups <- utils::read.csv(lookups, as.is = TRUE, row.names = NULL)		
 		} else {
 			stop('Lookups is not a data.frame or filepath.')
 		}
@@ -257,7 +258,7 @@ as.drugdose_multiwords <- function(multiwords){
 		} else if (is.data.frame(multiwords)){
 			# do nothing
 		} else if (is.character(multiwords) & length(multiwords) == 1){
-			multiwords <- read.csv(multiwords, as.is = TRUE, row.names = NULL)		
+			multiwords <- utils::read.csv(multiwords, as.is = TRUE, row.names = NULL)		
 		} else {
 			stop('Multiwords is not a data.frame or filepath.')
 		}
@@ -290,7 +291,7 @@ as.drugdose_singlewords <- function(singlewords){
 		} else if (is.data.frame(singlewords)){
 			# do nothing
 		} else if (is.character(singlewords) & length(singlewords) == 1){
-			singlewords <- read.csv(singlewords, as.is = TRUE, row.names = NULL)		
+			singlewords <- utils::read.csv(singlewords, as.is = TRUE, row.names = NULL)		
 		} else {
 			stop('Singlewords is not a data.frame or filepath.')
 		}

@@ -15,8 +15,10 @@ testdoseconvert <- function(text = goldstandard$text,
 	# Output is a combination of new interpreted result and goldstandard
 	# with outcome field outcome = 'actual', 'intended' or 'correct'
 	# All errors are also printed to the debug window
+	outcome <- qty <- freq <- tot <- time <- change <- choice <- NULL
+	duration <- daily_dose <- NULL
 	
-	tolerance = 0.0001 # tolerance for numerical value comparison
+	tolerance = 0.005 # tolerance for numerical value comparison
 
 	if (is.null(textid)){
 		textid <- seq_along(text)

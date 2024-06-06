@@ -20,3 +20,8 @@
 19,1,"two mg a day",2,"mg",1,2,"exact",1,"nochange","nochoice",0,2
 20,1,"one tab am",1,"tab",1,1,"exact",1,"nochange","nochoice",0,1
 21,1,"three to be taken twice a day to a maximum of 12 tablets daily",3,"tab",2,6,"average",1,"nochange","nochoice",0,6
+22,1,"20mg + 40mg daily",60,"mg",1,60,"exact",1,"nochange","nochoice",0,60
+23,1,"20mg or 40mg twice daily",30,"mg",2,60,"average",1,"nochange","nochoice",0,60
+24,1,"use only twice a week and keep every night hair for at least",0,,2,2,"exact",7,"nochange","nochoice",0,0.2857143
+25,1,"1 immediately / max 1 weekly sls",1,,1,1,"max",7,"nochange","nochoice",0,0.1428571
+26,1,"apply three times a day for at least a week",0,,3,3,"exact",1,"nochange","nochoice",7,3

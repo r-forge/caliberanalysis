@@ -16,3 +16,5 @@ S3method("addterm", "drugdose_lookups")
 
 import(data.table)
 importFrom("utils", "data", "read.csv", "write.csv")
+importFrom("graphics", "text")
+importFrom("stats", "time")

@@ -1,3 +1,25 @@
+Version 0.1-5
+===================
+
+BUG FIXES:
+
+-   Improvements to algorithm: ignores everything after 'keep',
+    ignores 'at least', handles 'x-weekly' and 'x-monthly' (where
+    x is a number) correctly, handles addition (e.g. 20mg + 40mg daily)
+-   Suppresses console output if noisy=FALSE
+-   Corrected error in combining regimens if first dose is 'stat'
+    and second dose is being used, or when combining 'or' where
+    dose 1 has quantity but no time (e.g. 1 or 2 twice a day)
+
+Version 0.1-4
+===================
+
+BUG FIXES:
+
+-   Corrected error in combining regimens if one has missing time
+-   Keep initial regimen if second regimen is a maximum dose and is
+    greater than the first regimen (as intended)
+
 Version 0.1-3
 ===================
 

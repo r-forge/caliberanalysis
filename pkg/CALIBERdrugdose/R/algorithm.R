@@ -38,6 +38,7 @@ doseconvert <- function(text, textid = seq_along(text), dosage_mg = NULL,
 	# textid = NULL; simplify = TRUE; singlewords = NULL; multiwords = NULL;
 	#    patterns = NULL; uselookups = TRUE; lookups = NULL;
 	#    customlookups = NULL; cores = 1
+	originalorder <- doseid <- dosestrings <- NULL
 
 	lookups <- NULL
 	if (!is.null(customlookups)){
@@ -91,6 +92,8 @@ doseconvert <- function(text, textid = seq_along(text), dosage_mg = NULL,
 		by = dosestrings]
 
 	analysis <- function(text){
+		qty <- freq <- tot <- time <- change <- choice <- duration <- NULL
+		daily_dose <- NULL
 		x <- trim(tolower(text))
 		if (!is.null(lookups)){
 			result <- lookups[x, .(qty, units, freq, tot, max, time,
@@ -119,7 +122,7 @@ doseconvert <- function(text, textid = seq_along(text), dosage_mg = NULL,
 
 	# Analyse the dose strings
 	if (multicore){
-		results <- mclapply(uniquedoses$dosestrings, analysis)
+		results <- parallel::mclapply(uniquedoses$dosestrings, analysis)
 	} else {
 		results <- lapply(uniquedoses$dosestrings, analysis)
 	}
@@ -166,6 +169,7 @@ calculate_mg <- function(results, dosage_mg){
 	#        it will be 0.5). It should be missing if not 
 	#        meaningful (e.g. for creams)
 	# Adds a column 'daily_mg' to the output
+	daily_mg <- daily_dose <- NULL
 	
 	if (length(dosage_mg) != nrow(results)){
 		stop(paste0('dosage_mg has ', length(dosage_mg),
@@ -456,30 +460,32 @@ simplifydose <- function(regimens, noisy = FALSE) {
 						(regimens$time[1] / regimens$time[2])
 				}
 				regimens$time[2] <- regimens$time[1]
-				cat('\nStandardising time between dose lines:\n')
-				print(regimens[1:2,])
+				if (noisy){
+					cat('\nStandardising time between dose lines:\n')
+					print(regimens[1:2,])
+				}
 			}
 			if (regimens$qty[1] == 0 & regimens$qty[2] == 0){
 				# no quantities, only frequencies (e.g. 'apply twice daily')
-				cat('\nNo quantities, only frequencies\n')
+				if (noisy) cat('\nNo quantities, only frequencies\n')
 				totaldose <- sum(regimens$tot[1:2] * regimens$duration[1:2])
 				totalfreq <- sum(regimens$freq[1:2] * regimens$duration[1:2])
 				regimens$tot[1] <- totaldose / sum(regimens$duration[1:2])
 				regimens$freq[1] <- totalfreq / sum(regimens$duration[1:2])
 			} else if (regimens$qty[1] == regimens$qty[2] & regimens$freq[1] > 0) {
 				# equal qty, nonmissing freq --> calculate average freq
-				cat('\nEqual quantities, calculating average frequency\n')
+				if (noisy) cat('\nEqual quantities, calculating average frequency\n')
 				totalfreq <- sum(regimens$freq[1:2] * regimens$duration[1:2])
 				regimens$freq[1] <- totalfreq / sum(regimens$duration[1:2])
 				regimens$tot[1] <- regimens$freq[1] * regimens$qty[1]
 			} else if (regimens$freq[1] == regimens$freq[2]){
 				# equal freq (and nonmissing qty) --> calculate average qty
-				cat('\nEqual frequency, calculating average quantity\n')
+				if (noisy) cat('\nEqual frequency, calculating average quantity\n')
 				totalqty <- sum(regimens$qty[1:2] * regimens$duration[1:2])
 				regimens$qty[1] <- totalqty / sum(regimens$duration[1:2])
 				regimens$tot[1] <- regimens$freq[1] * regimens$qty[1]
 			} else if (regimens$time[2] > 0) {
-				cat('\nUse frequency and time from first dose; standardise quantity\n')
+				if (noisy) cat('\nUse frequency and time from first dose; standardise quantity\n')
 				# at least some data in dose line 2
 				# use frequency from first dose; scale quantity appropriately
 				regimens$qty[2] <- regimens$tot[2] / regimens$freq[1]
@@ -491,7 +497,7 @@ simplifydose <- function(regimens, noisy = FALSE) {
 			} else if (regimens$time[2] == 0) {
 				# no data in dose 2; use qty and freq from dose 1
 				# (all values should already be in the right place)
-				cat('\nNo daily dose in dose 2\n')
+				if (noisy) cat('\nNo daily dose in dose 2\n')
 			}
 			# add durations. 'change' marked as combined doses
 			regimens$duration[1] <- sum(regimens$duration[1:2])
@@ -889,7 +895,8 @@ numbersReplace <- function(pds, maxifchoice) {
 		pd %in% c('(', ')', ':', '/', '&', '-')
 	for (i in seq_along(pd)){
 		if (!dont_evaluate[i]){
-			try(pd[i] <- as.character(eval(parse(text = pd[i]))))
+			try(pd[i] <- as.character(eval(parse(text = pd[i]))),
+				silent = TRUE)
 		}
 	}
 	
@@ -1200,7 +1207,7 @@ combineParts <- function(trial, linkword, noisy = FALSE) {
 				a$freq <- b$freq
 				a$time <- b$time
 				a$qty <- (a$qty + b$qty) / 2
-				a$tot <- a$tot * a$qty
+				a$tot <- a$freq * a$qty # error corrected 5/6/2024
 			} else if (a$freq > 0 & a$qty > 0 & b$freq > 0 & b$qty == 0) {
 				# FREQUENCIES ONLY: 2 times a day or | once at night
 				a$freq <- (a$freq + b$freq) / 2
@@ -1218,7 +1225,7 @@ combineParts <- function(trial, linkword, noisy = FALSE) {
 			} else if (a$freq > 0 & a$qty > 0 & b$freq > 0 & b$qty > 0) {
 				# 1 QTY, FREQ; 2 FREQ: 10 ml every morning or | twice a day
 				a$freq <- (a$freq + b$freq) / 2
-				a$tot <- a$tot * a$qty			
+				a$tot <- a$tot * a$qty
 			} else if (b$tot > 0) {
 				# OTHER: 3 after breakfast or | 2 after breakfast
 				a$tot <- (a$tot + b$tot) / 2
@@ -1256,10 +1263,10 @@ combineParts <- function(trial, linkword, noisy = FALSE) {
 				(a$time == 0 & a$tot > 0) | (b$tot > 0 & a$duration == 1) |
 				(a$tot == 0 & b$tot > 0)) {
 				# use dose 2
-				items <- c('freq', 'qty', 'tot', 'duration')
+				items <- c('freq', 'qty', 'tot', 'time', 'duration')
 				a[,items] <- b[,items]
 				a$max <- 'max'
-			} else {				
+			} else {
 				# retain existing first dose
 				a$max <- 'average'
 			}

@@ -1,1 +1,1 @@
-singlewords <- read.csv('singlewords.csv', header = TRUE, as.is = TRUE)
+singlewords <- utils::read.csv('singlewords.csv', header = TRUE, as.is = TRUE)
